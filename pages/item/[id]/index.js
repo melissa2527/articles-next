@@ -15,7 +15,11 @@ const item = ({item}) => {
     )
 }
 
-export const getServerSideProps = async (context) => {
+// getServerSideProps
+
+// if created api - api file, you can switch the await fetch()
+
+export const getStaticProps = async (context) => {
     const res = await fetch(`https://jsonplaceholder.typicode.com/posts/${context.params.id}`)
 
     const item = await res.json()
@@ -24,6 +28,18 @@ export const getServerSideProps = async (context) => {
         props: {
             item
         }
+    }
+}
+
+export const getStaticPaths = async () => {
+    const res = await fetch(`https://jsonplaceholder.typicode.com/posts`)
+    const items = await res.json()
+    const ids = items.map(item => item.id)
+    const paths = ids.map(id => ({params: {id: id.toString()}}))
+
+    return {
+        paths,
+        fallback: false
     }
 }
 
